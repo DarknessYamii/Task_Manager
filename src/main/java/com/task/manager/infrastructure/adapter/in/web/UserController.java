@@ -2,11 +2,13 @@ package com.task.manager.infrastructure.adapter.in.web;
 
 
 import com.task.manager.application.port.in.user.CreateUserUseCase;
+import com.task.manager.application.port.in.user.DeleteAllUserUseCase;
 import com.task.manager.application.port.in.user.DeleteUserUseCase;
 import com.task.manager.application.port.in.user.GetAllUserUseCase;
 import com.task.manager.application.port.in.user.GetUserByIdUseCase;
 import com.task.manager.application.port.in.user.GetUserByNameUseCase;
 import com.task.manager.domain.model.UserDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ public class UserController {
     private final GetUserByIdUseCase getUserByIdUseCase;
     private final GetAllUserUseCase getAllUserUseCase;
     private final GetUserByNameUseCase getUserByNameUseCase;
+    private final DeleteAllUserUseCase deleteAllUserUseCase;
 
     /**
      * Instantiates a new User controller.
@@ -40,12 +43,13 @@ public class UserController {
      * @param getAllUserUseCase    the get all user use case
      * @param getUserByNameUseCase the get user by name use case
      */
-    public UserController(DeleteUserUseCase deleteUserUseCase, CreateUserUseCase createUserUseCase, GetUserByIdUseCase getUserByIdUseCase, GetAllUserUseCase getAllUserUseCase, GetUserByNameUseCase getUserByNameUseCase) {
+    public UserController(DeleteUserUseCase deleteUserUseCase, CreateUserUseCase createUserUseCase, GetUserByIdUseCase getUserByIdUseCase, GetAllUserUseCase getAllUserUseCase, GetUserByNameUseCase getUserByNameUseCase, DeleteAllUserUseCase deleteAllUserUseCase) {
         this.deleteUserUseCase = deleteUserUseCase;
         this.createUserUseCase = createUserUseCase;
         this.getUserByIdUseCase = getUserByIdUseCase;
         this.getAllUserUseCase = getAllUserUseCase;
         this.getUserByNameUseCase = getUserByNameUseCase;
+        this.deleteAllUserUseCase = deleteAllUserUseCase;
     }
 
     /**
@@ -124,6 +128,16 @@ public class UserController {
             List<UserDTO> user = getAllUserUseCase.getAllUser();
             return ResponseEntity.ok(user);
         } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping(value = "/delete/all")
+    public ResponseEntity<?> deleteAllUsers() {
+        try {
+            deleteAllUserUseCase.deleteAllUsers();
+            return ResponseEntity.ok(HttpStatus.OK);
+        }catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }

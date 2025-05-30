@@ -1,6 +1,7 @@
 package com.task.manager.infrastructure.adapter.out.persistence.user;
 
 import com.task.manager.domain.model.UserDTO;
+import com.task.manager.domain.model.UserRole;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -19,8 +20,8 @@ public class UserMapper {
      */
     public UserEntity saveUserMapper(UserDTO userDTO) {
         return new UserEntity().builder().userName(userDTO.getUserName()).password(userDTO.getPassword()).
-                email(userDTO.getEmail()).role(userDTO.getRole()).
-                createdDate(String.valueOf(LocalDate.now())).phone(userDTO.getPhone()).build();
+                email(userDTO.getEmail()).role(UserConstants.ROLE_USER).
+                createdDate(String.valueOf(LocalDate.now())).phone(userDTO.getPhone()).status(UserConstants.ACTIVE).build();
 
     }
 
@@ -34,6 +35,6 @@ public class UserMapper {
     public UserDTO entityToDto(UserEntity userEntity) {
         return new UserDTO().builder().id(userEntity.getId()).userName(userEntity.getUserName()).
                 password(userEntity.getPassword()).status(userEntity.getStatus()).status(userEntity.getStatus()).
-                email(userEntity.getEmail()).phone(userEntity.getPhone()).createdDate(userEntity.getCreatedDate()).build();
+                email(userEntity.getEmail()).phone(userEntity.getPhone()).createdDate(userEntity.getCreatedDate()).role(userEntity.getRole()).build();
     }
 }

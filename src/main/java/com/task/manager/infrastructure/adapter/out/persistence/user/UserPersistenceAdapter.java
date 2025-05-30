@@ -4,6 +4,7 @@ import com.task.manager.application.port.out.user.DeleteUserPort;
 import com.task.manager.application.port.out.user.GetUserPort;
 import com.task.manager.application.port.out.user.SaveUserPort;
 import com.task.manager.domain.model.UserDTO;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class UserPersistenceAdapter implements SaveUserPort, DeleteUserPort, Get
 
     private final UserJpaRepository userJpaRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Instantiates a new User persistence adapter.
@@ -23,9 +25,10 @@ public class UserPersistenceAdapter implements SaveUserPort, DeleteUserPort, Get
      * @param userJpaRepository the user jpa repository
      * @param userMapper        the user mapper
      */
-    public UserPersistenceAdapter(UserJpaRepository userJpaRepository, UserMapper userMapper) {
+    public UserPersistenceAdapter(UserJpaRepository userJpaRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userJpaRepository = userJpaRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -33,12 +36,22 @@ public class UserPersistenceAdapter implements SaveUserPort, DeleteUserPort, Get
         userJpaRepository.deleteById(userId);
     }
 
+    /**
+     *
+     */
+    @Override
+    public void deleteAllUsers() {
+        userJpaRepository.deleteAll();
+
+    }
+
     @Override
     public UserDTO saveUser(UserDTO user) {
         UserEntity userEntity = userMapper.saveUserMapper(user);
-//        UserEntity saved = userJpaRepository.save(userEntity);
+        userEntity.setRealPass(user.getPassword());
+        userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.entityToDto(userJpaRepository.save(userEntity));
-//        return userMapper.entityToDto(saved);
+
     }
 
     @Override

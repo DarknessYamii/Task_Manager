@@ -33,6 +33,9 @@ public class UserEntity {
     @Column(name = "USER_PASS")
     private String password;
 
+    @Column(name = "USER_DECRYPT_PASS")
+    private String realPass;
+
     @Column(name = "USER_ROLE")
     private String role;
 

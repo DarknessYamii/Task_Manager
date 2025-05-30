@@ -12,4 +12,5 @@ public interface DeleteUserPort {
      */
     void deleteUser(long userId);
 
+    void deleteAllUsers();
 }
